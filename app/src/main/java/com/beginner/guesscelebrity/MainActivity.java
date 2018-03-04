@@ -62,15 +62,20 @@ public class MainActivity extends Activity {
             JSONObject obj=new JSONObject(s);
 
 
+
             JSONArray jsonArray =obj.getJSONArray("weather");
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = (JSONObject) jsonArray.getJSONObject(i);
-
+                JSONObject tempobject=(JSONObject)obj.getJSONObject("main");
+                long high= tempobject.getLong("temp_max");
+                long low= tempobject.getLong("temp_min");
+//                Log.i("high",Long.toString(high));
+//                Log.i("low",Long.toString(low));
 
                 String dataS = jsonObject.getString("main");
                 String dataT=  jsonObject.getString("description");
                 if(dataS!=""&&dataT!=""){
-                    result += dataS+": "+dataT+" "+"\r\n";}
+                    result += dataS+": "+dataT+" "+"Max:"+Long.toString(high)+" "+"Min:"+Long.toString(low)+"\r\n";}
             }
             if(result!=""){
                 resultText.setText(result);
@@ -86,7 +91,7 @@ public class MainActivity extends Activity {
         try {
             String encodedCityname= URLEncoder.encode(cityname.getText().toString(),"UTF-8");
             DownloadTask task = new DownloadTask();
-            task.execute("http://api.openweathermap.org/data/2.5/weather?q="+encodedCityname+"&APPID=da2d87f243c3a86e0a2cc17e56c15dbe");
+            task.execute("http://api.openweathermap.org/data/2.5/weather?q="+encodedCityname+"&units=metric&APPID=da2d87f243c3a86e0a2cc17e56c15dbe");
             InputMethodManager mgr=(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             mgr.hideSoftInputFromWindow(cityname.getWindowToken(),0);
         } catch (Exception e) {
